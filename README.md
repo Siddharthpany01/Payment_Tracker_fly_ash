@@ -11,6 +11,7 @@ A shareable customer dues tracker with WhatsApp reminder links and Google Sheets
 5. Choose **Web app**.
 6. Set **Execute as** to **Me** and **Who has access** to **Anyone**.
 7. Deploy and copy the Web app URL.
+8. After updating this app, choose **Manage deployments > Edit > New version**, then deploy again and update the saved URL if GitHub changes it.
 
 ## 2. Connect the app
 
@@ -18,7 +19,7 @@ A shareable customer dues tracker with WhatsApp reminder links and Google Sheets
 2. Choose **Settings** and paste the Web app URL in **Google Sheets Apps Script web app URL**.
 3. Save Settings. The app writes a full backup to the `Payment Tracker Data` sheet and readable customer rows to `Customers`.
 
-Changes are saved in the browser first, then sent to Google Sheets. A browser still needs to be configured before it can show cloud data. Re-opening a configured browser loads the latest cloud copy.
+Changes are saved in the browser first, then sent to Google Sheets. The website checks the sheet every 15 seconds. If the same customer is edited on both sides, the row with the newer `Updated At` value wins. The `Customers` sheet includes `ID` and `Updated At` columns; keep these columns and use them for customer two-way sync.
 
 ## 3. Publish the website
 

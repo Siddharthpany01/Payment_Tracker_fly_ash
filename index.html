@@ -120,14 +120,16 @@ hi:'नमस्ते {name}, {factory} की ओर से याद दि�
 or:'ନମସ୍କାର {name}, {factory} ତରଫରୁ ସ୍ମରଣ: ଆପଣଙ୍କର ₹{amount} ବକେୟା ଅଛି ({since} ଠାରୁ)। ଦୟାକରି ଶୀଘ୍ର ପରିଶୋଧ କରନ୍ତୁ। ଧନ୍ୟବାଦ!'};
 let S={c:[],s:{factory:'Our Brick Factory',cc:'91',lang:'en',gap:3,min:1,upi:'',payee:'',acn:'',acc:'',ifsc:'',bk:'',sheetsUrl:'',addPay:true,link:true,tpl:{...TPL}}};
 try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r)S={c:r.c||[],s:{...S.s,...r.s,tpl:{...TPL,...(r.s&&r.s.tpl)}}}}catch(e){}
-let cloudTimer;
+let cloudTimer, cloudSyncTimer, savingCloud=false;
 const syncStatus=t=>{const el=$('#im');if(el)el.textContent=t};
+const touchChangedCustomers=()=>{const updated=Date.now();S.c.forEach(c=>{if(!c.updatedAt)c.updatedAt=new Date(updated).toISOString()})};
 const cloudSave=()=>{const endpoint=S.s.sheetsUrl;if(!endpoint)return clearTimeout(cloudTimer);
- clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>{syncStatus('Saving to Google Sheets...');fetch(endpoint,{method:'POST',mode:'cors',body:JSON.stringify({action:'save',data:S})}).then(r=>r.json()).then(r=>syncStatus(r.ok?'Saved to Google Sheets.':'Sheet backup failed.')).catch(()=>syncStatus('Sheet backup failed. Browser copy is still saved.'));},700)};
+ S.updatedAt=new Date().toISOString();touchChangedCustomers();localStorage.setItem(KEY,JSON.stringify(S));
+ clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>{syncStatus('Saving to Google Sheets...');savingCloud=true;fetch(endpoint,{method:'POST',mode:'cors',body:JSON.stringify({action:'save',data:S})}).then(r=>r.json()).then(r=>{savingCloud=false;syncStatus(r.ok?'Saved to Google Sheets.':'Sheet sync failed.');if(r.ok)loadCloud()}).catch(()=>{savingCloud=false;syncStatus('Sheet sync failed. Browser copy is still saved.')});},700)};
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}cloudSave();};
-const loadCloud=async()=>{const endpoint=S.s.sheetsUrl;if(!endpoint)return;
- try{const r=await fetch(endpoint+'?action=get');const x=await r.json();if(!x.ok||!x.data)return;
-  const remote=x.data;if(remote&&typeof remote==='object'&&Array.isArray(remote.c)){S={c:remote.c,s:{...S.s,...remote.s,tpl:{...TPL,...(remote.s&&remote.s.tpl)}}};localStorage.setItem(KEY,JSON.stringify(S));render();syncStatus('Loaded from Google Sheets.')}}catch(e){syncStatus('Could not load Google Sheets; using the browser copy.')}};
+const loadCloud=async()=>{const endpoint=S.s.sheetsUrl;if(!endpoint||savingCloud)return;
+ try{const r=await fetch(endpoint+'?action=get&_='+Date.now(),{cache:'no-store'});const x=await r.json();if(!x.ok||!x.data)return;
+  const remote=x.data;if(remote&&typeof remote==='object'&&Array.isArray(remote.c)){S={...S,...remote,s:{...S.s,...remote.s,tpl:{...TPL,...(remote.s&&remote.s.tpl)}}};localStorage.setItem(KEY,JSON.stringify(S));render();syncStatus('Synced with Google Sheets.')}}catch(e){syncStatus('Could not sync Google Sheets; using the browser copy.')}};
 const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
 const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
@@ -184,7 +186,7 @@ $('#esv').onclick=()=>{
  const n=$('#en').value.trim();if(!n){$('#er').textContent='Enter the customer name.';return}
  const due=Math.max(0,(parseFloat($('#ed2').value)||0)-(parseFloat($('#epd').value)||0));
  const o=cur||{id:String(Date.now()),n:0,last:null};
- Object.assign(o,{name:n,phone:$('#ep').value.trim(),place:$('#el').value.trim(),due,since:$('#es').value,lang:$('#eg').value,note:$('#eo').value.trim()});
+ Object.assign(o,{name:n,phone:$('#ep').value.trim(),place:$('#el').value.trim(),due,since:$('#es').value,lang:$('#eg').value,note:$('#eo').value.trim(),updatedAt:new Date().toISOString()});
  if(!cur)S.c.push(o);save();$('#ed').close();render()};
 $('#edl').onclick=()=>{if(!delArm){delArm=true;$('#edl').textContent='Tap again to delete';return}
  S.c=S.c.filter(c=>c!==cur);save();$('#ed').close();render()};
@@ -246,4 +248,5 @@ function hist(){
  <h4>Reminder details</h4>${lg.length?`<div class="tb"><table><tr><th class="l">Date</th><th class="l">Language</th></tr>${lg.map(r=>`<tr><td class="l">${full(r.d)}</td><td class="l">${LN[r.l]||''}</td></tr>`).join('')}</table></div>`:`<p class="fn">${c.n?`${c.n} reminders sent before history tracking began; last on ${full(c.last)}.`:'No reminders sent yet.'}</p>`}`}
 render();
 loadCloud();
+cloudSyncTimer=setInterval(()=>{if(!document.hidden)loadCloud()},15000);
 </script></body></html>
