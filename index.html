@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dues &amp; WhatsApp Reminders</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#e9ecea;--card:#fff;--ink:#1b2226;--mut:#5d6a70;--line:#d5dad8;--wa:#12803f;--waI:#fff;--amb:#8a5200;--ambB:#fdebc8;--red:#a4261d;--redB:#fbdad6;--ok:#2e6b4a;--okB:#d9efe1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15191b;--card:#1f2527;--ink:#e8ecea;--mut:#9aa8ad;--line:#344044;--wa:#3fbf72;--waI:#04210f;--amb:#f0c46b;--ambB:#3d2f10;--red:#ff9a90;--redB:#471d19;--ok:#8fd4ae;--okB:#183425;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15191b;--card:#1f2527;--ink:#e8ecea;--mut:#9aa8ad;--line:#344044;--wa:#3fbf72;--waI:#04210f;--amb:#f0c46b;--ambB:#3d2f10;--red:#ff9a90;--redB:#471d19;--ok:#8fd4ae;--okB:#183425;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "IBM Plex Sans",system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.w{max-width:860px;margin:0 auto;padding:18px 14px 40px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+h1{font-size:22px;margin:0;letter-spacing:-.01em}
+header p{margin:2px 0 0;color:var(--mut);font-size:13px}
+.tot{background:var(--ink);color:var(--bg);border-radius:10px;padding:16px 18px;display:flex;flex-wrap:wrap;gap:6px 28px;align-items:baseline}
+.tot b{font-size:34px;font-weight:700;letter-spacing:-.02em}
+.tot span{font-size:13px;opacity:.75}
+.tot div{display:flex;flex-direction:column}
+.tool{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:7px;padding:8px 10px;min-width:0}
+input:focus,select:focus,textarea:focus,.b:focus-visible{outline:2px solid var(--wa);outline-offset:1px}
+#q{flex:1 1 160px}
+.b{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:7px;padding:8px 13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.b.p{background:var(--wa);color:var(--waI);border-color:var(--wa)}
+.b:disabled{opacity:.45;cursor:default}
+.r{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.r.z{opacity:.6}
+.m{flex:1 1 220px;min-width:0}
+.m h3{margin:0;font-size:16px}
+.m p{margin:2px 0 0;color:var(--mut);font-size:13px}
+.a{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.amt{font-size:20px;font-weight:700;min-width:96px;text-align:right}
+.chip{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--okB);color:var(--ok)}
+.chip.k1{background:var(--ambB);color:var(--amb)}.chip.k2{background:var(--redB);color:var(--red)}
+.empty{text-align:center;color:var(--mut);padding:34px 10px;background:var(--card);border:1px dashed var(--line);border-radius:10px}
+.fn{color:var(--mut);font-size:12.5px;margin-top:18px}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);width:min(440px,calc(100% - 24px));padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin:0 0 10px;font-size:18px}
+label{display:block;font-size:12.5px;color:var(--mut);margin:9px 0 3px}
+dialog input,dialog select,dialog textarea{width:100%}
+textarea{min-height:76px;resize:vertical}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.act{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.act .sp{flex:1}
+.pv{white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:10px 12px;margin:8px 0;font-size:14px}
+.dg{color:var(--red)}
+[hidden]{display:none!important}
+dialog{max-height:calc(100% - 24px);overflow:auto}
+nav{display:flex;gap:6px;margin:0 0 12px}
+.b.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tb{overflow-x:auto;margin:6px 0 16px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--mut)}th.l,td.l{text-align:left}
+h4{margin:18px 0 0;font-size:15px}.neg{color:var(--ok)}
+</style></head>
+<body><div class="w">
+<header><div><h1>Dues &amp; Reminders</h1><p>Customer payments pending · one tap opens WhatsApp</p></div>
+<button class="b" id="bs">Settings</button></header>
+<nav><button class="b on" data-t="d">Dues</button><button class="b" data-t="h">History</button></nav>
+<div id="dv">
+<div class="tot" id="st"></div>
+<div class="tool">
+<input id="q" type="search" placeholder="Search name, place or phone">
+<select id="so" aria-label="Sort"><option value="d">Biggest due</option><option value="o">Oldest due</option><option value="n">Name A–Z</option></select>
+<select id="lg" aria-label="Message language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="or">ଓଡ଼ିଆ</option></select>
+<label class="b" style="margin:0;color:var(--ink);font-size:inherit">Import register<input id="fi" type="file" accept=".xlsx,.xls,.ods,.csv" hidden></label>
+<button class="b" id="ba">Add customer</button>
+<button class="b p" id="qb">Remind all</button>
+</div>
+<p id="im" class="fn" style="margin:0 0 10px" role="status"></p>
+<div id="ls"></div>
+</div>
+<div id="hv" hidden><div class="tool"><select id="hc" aria-label="Customer" style="flex:1 1 220px"></select></div><div id="hb"></div></div>
+<p class="fn">WhatsApp opens with the message ready; you press Send. Customer entries are backed up to Google Sheets when configured; browser storage keeps the app usable offline. “Import register” reads the Outward sheet of Brick_Factory_Register.xlsx and totals each customer’s credit.</p>
+</div>
+
+<dialog id="ed"><h2 id="et">Customer</h2>
+<label>Name</label><input id="en">
+<div class="g2"><div><label>WhatsApp number</label><input id="ep" inputmode="tel" placeholder="98xxxxxxxx"></div><div><label>Place</label><input id="el"></div></div>
+<div class="g2"><div><label>Amount due (₹)</label><input id="ed2" type="number" min="0"></div><div><label>Payment received now (₹)</label><input id="epd" type="number" min="0" placeholder="0"></div></div>
+<div class="g2"><div><label>Due since</label><input id="es" type="date"></div><div><label>Message language</label><select id="eg"><option value="">Default</option><option value="en">English</option><option value="hi">हिन्दी</option><option value="or">ଓଡ଼ିଆ</option></select></div></div>
+<label>Note</label><textarea id="eo"></textarea>
+<p class="dg" id="er"></p>
+<div class="act"><button class="b dg" id="edl">Delete</button><span class="sp"></span><button class="b" id="ec">Cancel</button><button class="b p" id="esv">Save</button></div></dialog>
+
+<dialog id="sd"><h2>Settings</h2>
+<label>Factory name (used in messages)</label><input id="sf">
+<div class="g2"><div><label>Country code</label><input id="sc"></div><div><label>Remind again after (days)</label><input id="sg" type="number" min="0"></div></div>
+<label>Skip dues below (₹)</label><input id="sm" type="number" min="0">
+<h4>Cloud backup</h4>
+<label>Google Sheets Apps Script web app URL</label><input id="sheetsUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+<p style="font-size:12.5px;color:var(--mut)">Use the deployment URL from the included Apps Script. Entries are also kept in this browser.</p>
+<h4>Payment details in reminders</h4>
+<label>UPI ID</label><input id="su" placeholder="name@bank" autocapitalize="off">
+<label>Payee name shown in UPI app</label><input id="spn">
+<label>Bank account holder</label><input id="sn">
+<div class="g2"><div><label>Account number</label><input id="sa" inputmode="numeric"></div><div><label>IFSC</label><input id="si" autocapitalize="characters"></div></div>
+<label>Bank and branch</label><input id="sb">
+<label><input type="checkbox" id="sy" style="width:auto"> Add these payment details to every reminder</label>
+<label><input type="checkbox" id="sl" style="width:auto"> Include a tap-to-pay UPI link with the amount</label>
+<h4>Message text</h4>
+<label>English message</label><textarea id="te"></textarea>
+<label>हिन्दी message</label><textarea id="th"></textarea>
+<label>ଓଡ଼ିଆ message</label><textarea id="to"></textarea>
+<p style="font-size:12.5px;color:var(--mut)">Use {name}, {amount}, {since}, {factory} in the text. Payment details are added at the end automatically; put {pay} where you want them instead.</p>
+<div class="act"><button class="b" id="sx">Reset messages</button><span class="sp"></span><button class="b" id="sk">Cancel</button><button class="b p" id="ss">Save settings</button></div></dialog>
+
+<dialog id="qd"><h2 id="qt"></h2><div class="pv" id="qm"></div>
+<div class="act"><button class="b" id="qx">Stop</button><span class="sp"></span><button class="b" id="qk">Skip</button><a class="b p" id="qs" target="_blank" rel="noopener">Open WhatsApp</a></div></dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),KEY='bdw1';
+const TPL={en:'Hello {name}, a gentle reminder from {factory}: your payment of ₹{amount} is pending since {since}. Kindly clear it at the earliest. Thank you!',
+hi:'नमस्ते {name}, {factory} की ओर से याद दिलाना: आपका ₹{amount} बकाया है ({since} से)। कृपया जल्द भुगतान करें। धन्यवाद!',
+or:'ନମସ୍କାର {name}, {factory} ତରଫରୁ ସ୍ମରଣ: ଆପଣଙ୍କର ₹{amount} ବକେୟା ଅଛି ({since} ଠାରୁ)। ଦୟାକରି ଶୀଘ୍ର ପରିଶୋଧ କରନ୍ତୁ। ଧନ୍ୟବାଦ!'};
+let S={c:[],s:{factory:'Our Brick Factory',cc:'91',lang:'en',gap:3,min:1,upi:'',payee:'',acn:'',acc:'',ifsc:'',bk:'',sheetsUrl:'',addPay:true,link:true,tpl:{...TPL}}};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r)S={c:r.c||[],s:{...S.s,...r.s,tpl:{...TPL,...(r.s&&r.s.tpl)}}}}catch(e){}
+let cloudTimer;
+const syncStatus=t=>{const el=$('#im');if(el)el.textContent=t};
+const cloudSave=()=>{const endpoint=S.s.sheetsUrl;if(!endpoint)return clearTimeout(cloudTimer);
+ clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>{syncStatus('Saving to Google Sheets...');fetch(endpoint,{method:'POST',mode:'cors',body:JSON.stringify({action:'save',data:S})}).then(r=>r.json()).then(r=>syncStatus(r.ok?'Saved to Google Sheets.':'Sheet backup failed.')).catch(()=>syncStatus('Sheet backup failed. Browser copy is still saved.'));},700)};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}cloudSave();};
+const loadCloud=async()=>{const endpoint=S.s.sheetsUrl;if(!endpoint)return;
+ try{const r=await fetch(endpoint+'?action=get');const x=await r.json();if(!x.ok||!x.data)return;
+  const remote=x.data;if(remote&&typeof remote==='object'&&Array.isArray(remote.c)){S={c:remote.c,s:{...S.s,...remote.s,tpl:{...TPL,...(remote.s&&remote.s.tpl)}}};localStorage.setItem(KEY,JSON.stringify(S));render();syncStatus('Loaded from Google Sheets.')}}catch(e){syncStatus('Could not load Google Sheets; using the browser copy.')}};
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const days=d=>d?Math.floor((Date.now()-new Date(d+'T00:00:00'))/864e5):null;
+const short=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'}):'';
+const num=p=>{let d=String(p||'').replace(/\D/g,'');if(d.length===10)d=S.s.cc+d;else if(d.length===11&&d[0]==='0')d=S.s.cc+d.slice(1);return d.length>=11?d:''};
+const PL={en:['Pay by UPI','Bank transfer'],hi:['UPI से भुगतान','बैंक खाता'],or:['UPI ରେ ପେମେଣ୍ଟ','ବ୍ୟାଙ୍କ ଖାତା']};
+const pay=c=>{const s=S.s,l=PL[c.lang||s.lang]||PL.en,o=[];
+ if(s.upi){o.push(`${l[0]}: ${s.upi}`);if(s.link)o.push('upi://pay?pa='+encodeURIComponent(s.upi)+'&pn='+encodeURIComponent(s.payee||s.factory)+'&am='+Math.round(c.due)+'&cu=INR&tn='+encodeURIComponent('Dues '+c.name))}
+ if(s.acc)o.push(`${l[1]}: ${s.acn||s.payee||s.factory}, A/c ${s.acc}${s.ifsc?', IFSC '+s.ifsc:''}${s.bk?', '+s.bk:''}`);
+ return o.join('\n')};
+const msg=c=>{let t=S.s.tpl[c.lang||S.s.lang]||TPL.en;const p=S.s.addPay?pay(c):'';
+ t=t.includes('{pay}')?t.split('{pay}').join(p):(p?t+'\n\n'+p:t);
+ return t.split('{name}').join(c.name).split('{amount}').join(Math.round(c.due).toLocaleString('en-IN')).split('{since}').join(short(c.since)||'some time').split('{factory}').join(S.s.factory)};
+const link=c=>'https://wa.me/'+num(c.phone)+'?text='+encodeURIComponent(msg(c));
+const elig=c=>c.due>=S.s.min&&num(c.phone)&&(c.last==null||days(c.last)>=S.s.gap);
+const mark=c=>{c.n=(c.n||0)+1;c.last=iso(new Date());(c.log=c.log||[]).push({d:c.last,l:c.lang||S.s.lang});save()};
+
+function row(c){
+ const age=days(c.since),k=c.due<=0?'':age>=15?'k2':age>=7?'k1':'';
+ const ph=num(c.phone);
+ return `<article class="r${c.due<=0?' z':''}"><div class="m"><h3>${esc(c.name)}</h3>
+ <p>${esc(c.place||'')}${c.place&&c.phone?' · ':''}${c.phone?esc(c.phone):'<span class="dg">No number</span>'}</p>
+ <p>${c.last?`Reminded ${c.n||1}× · last ${short(c.last)}`:'Not reminded yet'}${c.note?' · '+esc(c.note):''}</p></div>
+ <div class="a"><span class="amt">${c.due>0?inr(c.due):'Cleared'}</span>${c.due>0&&age!=null?`<span class="chip ${k}">${age}d</span>`:''}
+ ${c.due>0&&ph?`<a class="b p" target="_blank" rel="noopener" href="${link(c)}" data-s="${c.id}">WhatsApp</a>`:c.due>0?`<button class="b p" data-e="${c.id}">Add number</button>`:''}
+ <button class="b" data-h="${c.id}">History</button><button class="b" data-e="${c.id}">Edit</button></div></article>`}
+
+function render(){
+ const q=$('#q').value.toLowerCase(),so=$('#so').value;
+ const a=S.c.filter(c=>(c.name+(c.place||'')+(c.phone||'')).toLowerCase().includes(q));
+ a.sort(so==='n'?(x,y)=>x.name.localeCompare(y.name):so==='o'?(x,y)=>(x.since||'9').localeCompare(y.since||'9'):(x,y)=>y.due-x.due);
+ const open=S.c.filter(c=>c.due>0),tot=open.reduce((s,c)=>s+c.due,0),ready=S.c.filter(elig).length;
+ $('#st').innerHTML=`<div><span>Total outstanding</span><b>${inr(tot)}</b></div><div><span>Customers owing</span><b>${open.length}</b></div><div><span>Ready to remind</span><b>${ready}</b></div>`;
+ $('#qb').textContent=ready?`Remind ${ready} now`:'Remind all';$('#qb').disabled=!ready;
+ $('#ls').innerHTML=a.length?a.map(row).join(''):'<div class="empty">No customers yet. Import your register or add a customer to start sending reminders.</div>';
+}
+$('#q').oninput=render;$('#so').onchange=render;
+$('#lg').value=S.s.lang;$('#lg').onchange=e=>{S.s.lang=e.target.value;save();render()};
+
+$('#ls').onclick=e=>{
+ const s=e.target.closest('[data-s]');if(s){mark(S.c.find(c=>c.id==s.dataset.s));setTimeout(render,300);return}
+ const h=e.target.closest('[data-h]');if(h){tab('h',h.dataset.h);return}
+ const b=e.target.closest('[data-e]');if(b)edit(b.dataset.e)};
+
+let cur=null,delArm=false;
+function edit(id){
+ cur=id?S.c.find(c=>c.id==id):null;delArm=false;const c=cur||{};
+ $('#et').textContent=cur?'Edit customer':'Add customer';$('#edl').style.display=cur?'':'none';$('#edl').textContent='Delete';
+ $('#en').value=c.name||'';$('#ep').value=c.phone||'';$('#el').value=c.place||'';$('#ed2').value=c.due||'';$('#epd').value='';
+ $('#es').value=c.since||iso(new Date());$('#eg').value=c.lang||'';$('#eo').value=c.note||'';$('#er').textContent='';$('#ed').showModal()}
+$('#ba').onclick=()=>edit();$('#ec').onclick=()=>$('#ed').close();
+$('#esv').onclick=()=>{
+ const n=$('#en').value.trim();if(!n){$('#er').textContent='Enter the customer name.';return}
+ const due=Math.max(0,(parseFloat($('#ed2').value)||0)-(parseFloat($('#epd').value)||0));
+ const o=cur||{id:String(Date.now()),n:0,last:null};
+ Object.assign(o,{name:n,phone:$('#ep').value.trim(),place:$('#el').value.trim(),due,since:$('#es').value,lang:$('#eg').value,note:$('#eo').value.trim()});
+ if(!cur)S.c.push(o);save();$('#ed').close();render()};
+$('#edl').onclick=()=>{if(!delArm){delArm=true;$('#edl').textContent='Tap again to delete';return}
+ S.c=S.c.filter(c=>c!==cur);save();$('#ed').close();render()};
+
+$('#bs').onclick=()=>{const s=S.s;$('#sf').value=s.factory;$('#sc').value=s.cc;$('#sg').value=s.gap;$('#sm').value=s.min;
+ $('#sheetsUrl').value=s.sheetsUrl||'';$('#su').value=s.upi;$('#spn').value=s.payee;$('#sn').value=s.acn;$('#sa').value=s.acc;$('#si').value=s.ifsc;$('#sb').value=s.bk;$('#sy').checked=s.addPay;$('#sl').checked=s.link;
+ $('#te').value=s.tpl.en;$('#th').value=s.tpl.hi;$('#to').value=s.tpl.or;$('#sd').showModal()};
+$('#sk').onclick=()=>$('#sd').close();
+$('#sx').onclick=()=>{$('#te').value=TPL.en;$('#th').value=TPL.hi;$('#to').value=TPL.or};
+$('#ss').onclick=()=>{const s=S.s;s.factory=$('#sf').value.trim()||s.factory;s.cc=$('#sc').value.replace(/\D/g,'')||'91';
+ s.gap=Math.max(0,parseInt($('#sg').value)||0);s.min=Math.max(0,parseFloat($('#sm').value)||0);
+ s.sheetsUrl=$('#sheetsUrl').value.trim().replace(/\\u0022/g,'');s.upi=$('#su').value.trim();s.payee=$('#spn').value.trim();s.acn=$('#sn').value.trim();s.acc=$('#sa').value.trim();s.ifsc=$('#si').value.trim().toUpperCase();s.bk=$('#sb').value.trim();s.addPay=$('#sy').checked;s.link=$('#sl').checked;
+ s.tpl={en:$('#te').value||TPL.en,hi:$('#th').value||TPL.hi,or:$('#to').value||TPL.or};save();$('#sd').close();render()};
+
+let Q=[];
+function qshow(){const c=S.c.find(x=>x.id==Q[0]);if(!c){$('#qd').close();render();return}
+ $('#qt').textContent=`${c.name} · ${inr(c.due)}  (${Q.length} left)`;$('#qm').textContent=msg(c);$('#qs').href=link(c)}
+$('#qb').onclick=()=>{Q=S.c.filter(elig).sort((a,b)=>b.due-a.due).map(c=>c.id);$('#qd').showModal();qshow()};
+$('#qs').onclick=()=>{const c=S.c.find(x=>x.id==Q[0]);if(c)mark(c);setTimeout(()=>{Q.shift();qshow()},400)};
+$('#qk').onclick=()=>{Q.shift();qshow()};$('#qx').onclick=()=>{$('#qd').close();render()};
+
+$('#fi').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{
+  const wb=XLSX.read(r.result,{type:'array',cellDates:true}),ws=wb.Sheets.Outward||wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});
+  const hi=rows.findIndex(x=>String(x[0]).trim()==='Date');if(hi<0)throw 0;
+  const h=rows[hi].map(x=>String(x).toLowerCase()),ix=k=>h.findIndex(x=>x.startsWith(k));
+  const iD=ix('date'),iP=ix('destination'),iN=ix('customer'),iT=ix('contact'),iC=ix('credit'),iQ=ix('quantity'),iA=ix('amount'),iPd=ix('paid'),g={};
+  rows.slice(hi+1).forEach(x=>{const cr=parseFloat(x[iC])||0,q=parseFloat(x[iQ])||0,name=String(x[iN]||x[iP]).trim();if(!name||(!cr&&!q))return;
+   const o=g[name.toLowerCase()]=g[name.toLowerCase()]||{name,place:String(x[iP]||''),phone:'',due:0,since:'',trips:[]};
+   o.due+=cr;if(x[iT])o.phone=String(x[iT]);
+   const d=x[iD] instanceof Date?iso(x[iD]):'';if(cr>0&&d&&(!o.since||d<o.since))o.since=d;o.trips.push({d,q,p:String(x[iP]||''),a:parseFloat(x[iA])||0,pd:parseFloat(x[iPd])||0})});
+  let add=0,upd=0;
+  Object.values(g).forEach(o=>{const c=S.c.find(y=>y.name.toLowerCase()===o.name.toLowerCase());
+   if(c){c.due=Math.max(0,o.due);c.since=o.since||c.since;c.trips=o.trips;if(!c.phone)c.phone=o.phone;upd++}
+   else{S.c.push({id:String(Date.now())+add,n:0,last:null,note:'',...o});add++}});
+  save();render();$('#im').textContent=`Imported: ${add} new, ${upd} updated.`
+ }catch(err){$('#im').textContent='Could not read this file. Pick Brick_Factory_Register.xlsx with an Outward sheet.'}e.target.value=''};
+ r.readAsArrayBuffer(f)};
+const full=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'No date';
+const m=n=>`<span class="${n<0?'neg':''}">${n<0?'−':''}${inr(Math.abs(n))}</span>`;
+const LN={en:'English',hi:'हिन्दी',or:'ଓଡ଼ିଆ'};
+function tab(t,id){$('#dv').hidden=t!=='d';$('#hv').hidden=t!=='h';
+ document.querySelectorAll('nav .b').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ if(t==='h'){$('#hc').innerHTML=S.c.slice().sort((x,y)=>x.name.localeCompare(y.name)).map(c=>`<option value="${c.id}">${esc(c.name)}${c.due>0?' · '+inr(c.due):''}</option>`).join('');if(id)$('#hc').value=id;hist()}else render()}
+document.querySelectorAll('nav .b').forEach(b=>b.onclick=()=>tab(b.dataset.t));$('#hc').onchange=hist;
+function hist(){
+ const c=S.c.find(x=>x.id==$('#hc').value),el=$('#hb');
+ if(!c){el.innerHTML='<div class="empty">No customers yet. Import your register on the Dues tab.</div>';return}
+ const T=(c.trips||[]).slice().sort((a,b)=>a.d.localeCompare(b.d)),by={},pm={};
+ T.forEach(t=>{(by[t.d]=by[t.d]||[]).push(t);const k=t.p||'Not stated',o=pm[k]=pm[k]||{n:0,q:0};if(t.q>0)o.n++;o.q+=t.q});
+ let bal=0;const sm=(g,k)=>g.reduce((s,t)=>s+t[k],0);
+ const rows=Object.keys(by).map(d=>{const g=by[d],a=sm(g,'a'),pd=sm(g,'pd'),f=a-pd,pv=bal;bal+=f;
+  return `<tr><td class="l">${full(d)}</td><td>${g.filter(t=>t.q>0).length}</td><td>${sm(g,'q').toLocaleString('en-IN')}</td><td class="l">${esc([...new Set(g.map(t=>t.p).filter(Boolean))].join(', '))}</td><td>${inr(a)}</td><td>${inr(pd)}</td><td>${m(pv)}</td><td>${m(f)}</td><td><b>${m(bal)}</b></td></tr>`}).reverse();
+ const trips=T.filter(t=>t.q>0).length,bricks=sm(T,'q'),lg=(c.log||[]).slice().reverse();
+ el.innerHTML=`<div class="tot"><div><span>${esc(c.name)} · current due</span><b>${inr(c.due)}</b></div><div><span>Total trips</span><b>${trips}</b></div><div><span>Bricks dispatched</span><b>${bricks.toLocaleString('en-IN')}</b></div><div><span>Reminders sent</span><b>${c.n||0}</b></div></div>
+ <h4>Dues by dispatch date</h4>${rows.length?`<div class="tb"><table><tr><th class="l">Date</th><th>Trips</th><th>Bricks</th><th class="l">Place</th><th>Amount</th><th>Paid</th><th>Previous due</th><th>Fresh due</th><th>Balance</th></tr>${rows.join('')}</table></div>`:'<div class="empty" style="margin-top:6px">No dispatch records yet. Import your register to load trips.</div>'}
+ <h4>Places dispatched to</h4>${Object.keys(pm).length?`<div class="tb"><table><tr><th class="l">Place</th><th>Trips</th><th>Bricks</th></tr>${Object.entries(pm).sort((a,b)=>b[1].q-a[1].q).map(([k,o])=>`<tr><td class="l">${esc(k)}</td><td>${o.n}</td><td>${o.q.toLocaleString('en-IN')}</td></tr>`).join('')}</table></div>`:'<p class="fn">No places recorded.</p>'}
+ <h4>Reminder details</h4>${lg.length?`<div class="tb"><table><tr><th class="l">Date</th><th class="l">Language</th></tr>${lg.map(r=>`<tr><td class="l">${full(r.d)}</td><td class="l">${LN[r.l]||''}</td></tr>`).join('')}</table></div>`:`<p class="fn">${c.n?`${c.n} reminders sent before history tracking began; last on ${full(c.last)}.`:'No reminders sent yet.'}</p>`}`}
+render();
+loadCloud();
+</script></body></html>
