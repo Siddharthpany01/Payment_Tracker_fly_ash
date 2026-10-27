@@ -118,8 +118,8 @@ const $=s=>document.querySelector(s),KEY='bdw1';
 const TPL={en:'Hello {name}, a gentle reminder from {factory}: your payment of ₹{amount} is pending since {since}. Kindly clear it at the earliest. Thank you!',
 hi:'नमस्ते {name}, {factory} की ओर से याद दिलाना: आपका ₹{amount} बकाया है ({since} से)। कृपया जल्द भुगतान करें। धन्यवाद!',
 or:'ନମସ୍କାର {name}, {factory} ତରଫରୁ ସ୍ମରଣ: ଆପଣଙ୍କର ₹{amount} ବକେୟା ଅଛି ({since} ଠାରୁ)। ଦୟାକରି ଶୀଘ୍ର ପରିଶୋଧ କରନ୍ତୁ। ଧନ୍ୟବାଦ!'};
-let S={c:[],s:{factory:'Our Brick Factory',cc:'91',lang:'en',gap:3,min:1,upi:'',payee:'',acn:'',acc:'',ifsc:'',bk:'',sheetsUrl:'',addPay:true,link:true,tpl:{...TPL}}};
-try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r)S={c:r.c||[],s:{...S.s,...r.s,tpl:{...TPL,...(r.s&&r.s.tpl)}}}}catch(e){}
+let S={c:[],s:{factory:'Our Brick Factory',cc:'91',lang:'en',gap:3,min:1,upi:'',payee:'',acn:'',acc:'',ifsc:'',bk:'',sheetsUrl:'https://script.google.com/macros/s/AKfycbwDlJdjNZTolSQy0CTtXgjYMIsV4te_69vTORwGSqTHyjXlxeOKjpghcNul4e7rpqb_dQ/exec',addPay:true,link:true,tpl:{...TPL}}};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r)S={c:r.c||[],s:{...S.s,...r.s,sheetsUrl:(r.s&&r.s.sheetsUrl)||S.s.sheetsUrl,tpl:{...TPL,...(r.s&&r.s.tpl)}}}}catch(e){}
 let cloudTimer, cloudSyncTimer, savingCloud=false;
 const syncStatus=t=>{const el=$('#im');if(el)el.textContent=t};
 const touchChangedCustomers=()=>{const updated=Date.now();S.c.forEach(c=>{if(!c.updatedAt)c.updatedAt=new Date(updated).toISOString()})};
