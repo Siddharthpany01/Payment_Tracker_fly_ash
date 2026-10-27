@@ -66,8 +66,9 @@ function saveCustomers(ss, customers) {
   }
   const now = new Date().toISOString();
   const rows = customers.map(function(customer) {
+    if (!customer.id) customer.id = Utilities.getUuid();
     return [
-      customer.id || Utilities.getUuid(), customer.name || '', customer.phone || '', customer.place || '', Number(customer.due || 0),
+      customer.id, customer.name || '', customer.phone || '', customer.place || '', Number(customer.due || 0),
       customer.since || '', customer.lang || '', customer.note || '', Number(customer.n || 0),
       customer.last || '', customer.updatedAt || now
     ];
@@ -81,23 +82,50 @@ function saveCustomers(ss, customers) {
 function readCustomers(ss, savedCustomers) {
   const sheet = ss.getSheetByName('Customers');
   if (!sheet || sheet.getLastRow() < 2) return savedCustomers;
-  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 11).getValues();
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(function(value) { return String(value || '').trim().toLowerCase(); });
+  const isLegacy = headers[0] === 'name';
+  const width = isLegacy ? 9 : Math.min(11, sheet.getLastColumn());
+  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, width).getValues();
   const sheetCustomers = values.map(function(row, index) {
-    const name = String(row[1] || '').trim();
+    let name, phone, place, due, since, lang, note, reminders, lastReminder, updatedAt;
+    if (isLegacy) {
+      name = String(row[0] || '').trim();
+      phone = String(row[1] || '').replace(/^['=]/, '');
+      place = String(row[2] || '');
+      due = Number(row[3] || 0);
+      since = formatSheetDate(row[4]);
+      lang = String(row[5] || '');
+      note = String(row[6] || '');
+      reminders = Number(row[7] || 0);
+      lastReminder = formatSheetDate(row[8]);
+      updatedAt = '';
+    } else {
+      name = String(row[1] || '').trim();
+      phone = String(row[2] || '').replace(/^['=]/, '');
+      place = String(row[3] || '');
+      due = Number(row[4] || 0);
+      since = formatSheetDate(row[5]);
+      lang = String(row[6] || '');
+      note = String(row[7] || '');
+      reminders = Number(row[8] || 0);
+      lastReminder = formatSheetDate(row[9]);
+      updatedAt = formatTimestamp(row[10]);
+    }
     if (!name) return null;
-    const id = String(row[0] || '').trim() || Utilities.getUuid();
+    const matched = savedCustomers.find(function(customer) { return String(customer.name || '').trim().toLowerCase() === name.toLowerCase(); });
+    const id = isLegacy ? (matched && matched.id ? matched.id : Utilities.getUuid()) : (String(row[0] || '').trim() || (matched && matched.id) || Utilities.getUuid());
     return {
       id: id,
       name: name,
-      phone: String(row[2] || '').replace(/^['=]/, ''),
-      place: String(row[3] || ''),
-      due: Number(row[4] || 0),
-      since: formatSheetDate(row[5]),
-      lang: String(row[6] || ''),
-      note: String(row[7] || ''),
-      n: Number(row[8] || 0),
-      last: formatSheetDate(row[9]),
-      updatedAt: String(row[10] || '') || new Date(Date.now() - index).toISOString()
+      phone: phone,
+      place: place,
+      due: due,
+      since: since,
+      lang: lang,
+      note: note,
+      n: reminders,
+      last: lastReminder,
+      updatedAt: updatedAt || (matched && matched.updatedAt) || new Date(Date.now() - index).toISOString()
     };
   }).filter(Boolean);
 
@@ -121,6 +149,15 @@ function readCustomers(ss, savedCustomers) {
     }
   });
   return Object.keys(byId).map(function(id) { return byId[id]; });
+}
+
+function formatTimestamp(value) {
+  if (!value) return '';
+  if (value instanceof Date) return value.toISOString();
+  const text = String(value).trim();
+  if (!text) return '';
+  const parsed = new Date(text);
+  return isNaN(parsed.getTime()) ? text : parsed.toISOString();
 }
 
 function formatSheetDate(value) {
